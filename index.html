@@ -7,7 +7,7 @@
 
     
 
-    <title>Hexo</title>
+    <title>Hack</title>
     <meta name="author" content="Alex Lin" />
     <meta name="keywords" content="" />
     <meta name="description" content="" />
@@ -15,13 +15,13 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
 
     
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="alternate" href="/atom.xml" title="Hack" type="application/atom+xml">
     
     
 
     <style type="text/css">
     @font-face {
-        font-family: 'icomoon';
+				font-family: 'icomoon';
         src: url("/fonts/icomoon.eot?q628ml");
         src: url("/fonts/icomoon.eot?q628ml#iefix") format('embedded-opentype'),
              url("/fonts/icomoon.ttf?q628ml") format('truetype'),
@@ -34,6 +34,7 @@
     
 <link rel="stylesheet" href="/css/style.css">
 
+		<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,900,400italic%7CSignika:700,300,400,600' rel='stylesheet' type='text/css'>
 
     <!--[if lt IE 9]>
     <style type="text/css">
@@ -43,7 +44,7 @@
     </style>
     <script type="text/javascript" src="https://unpkg.com/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
     <![endif]-->
-<meta name="generator" content="Hexo 4.2.0"></head>
+<meta name="generator" content="Hexo 4.2.0"><link rel="stylesheet" href="/css/prism-atom-dark.css" type="text/css"></head>
 <body>
 
     <main class="app">
@@ -51,7 +52,7 @@
     <div id="nav" class="nav">
     <div class="nav-mobile">
         <button id="open-panel" class="open-panel nav-mobile-item"><i class="icon-documents"></i></button>
-        <h1 class="nav-mobile-title nav-mobile-item">Hexo</h1>
+        <h1 class="nav-mobile-title nav-mobile-item">Hack</h1>
         <button id="open-menus" class="open-panel nav-mobile-item"><i class="icon-library"></i></button>
     </div>
 
@@ -75,7 +76,7 @@
     <aside id="aside" class="aside">
     <div id="aside-mask" class="aside-mask"></div>
     <div id="aside-inner" class="aside-inner">
-        <!-- <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form> -->
+        <!-- <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="http://voido.cc"></form> -->
 
         
         
@@ -85,7 +86,7 @@
             
             <div class="author-avatar">
                 <a href="/">
-                    <img src="/images/avatar.jpg" title="Alex Lin">
+                    <img src="/images/avatar.png" title="Alex Lin">
                 </a>
             </div>
             
@@ -126,22 +127,24 @@
 </header>
 
         <div id="content" class="content">
-            <div id="wrapper" class="wrapper" style="max-width: 800px">
+            <div id="wrapper" class="wrapper" style="max-width: 1000px">
                 
     <article class="article" itemscope itemprop="blogPost">
     
     <header class="article-header">
         
         <h1 itemprop="name">
-            <a href="/2020/05/28/Wireless-Protocol-Data-Link-Firmware-Reversing/">Wireless Protocol Data Link Firmware Reversing</a>
+            <a href="/2020/06/01/Hack-A-Sat-CTF-2020-Launch-Link/">Hack-A-Sat CTF 2020 - Launch Link</a>
         </h1>
         
         <div class="article-meta clearfix">
-            <a class="article-date" href="http://yoursite.com/index.html">
+            <a class="article-date" href="http://voido.cc/index.html">
+    
     
     <i class="icon-calendar"></i>
     
-    <time datetime="2020-05-29T03:27:49.000Z" itemprop="datePublished">2020-05-28</time>
+    <time datetime="2020-06-02T03:27:49.000Z" itemprop="datePublished">2020-06-01</time>
+    
 </a>
 
             
@@ -151,8 +154,17 @@
     
     <section class="article-body markdown-body">
         
-        <h2 id="Hack-A-Sat-CTF-2020-Launch-Link"><a href="#Hack-A-Sat-CTF-2020-Launch-Link" class="headerlink" title="Hack-A-Sat CTF 2020 - Launch Link"></a>Hack-A-Sat CTF 2020 - Launch Link</h2><p>Writeup coming soon</p>
-
+        <h2 id="Data-Link-Layer-Protocol-Firmware-Reversing-and-Exploitation"><a href="#Data-Link-Layer-Protocol-Firmware-Reversing-and-Exploitation" class="headerlink" title="Data Link Layer Protocol Firmware Reversing and Exploitation"></a>Data Link Layer Protocol Firmware Reversing and Exploitation</h2><p>Hack-A-Sat CTF 2020 is a space security themed CTF that took place this past week, and it had some really great challenges. One of which is Launch Link, a reversing + pwn task which was solved by only one team during the competition.</p>
+<p>We (<a href="https://twitter.com/_voidmercy" target="_blank" rel="noopener">VoidMercy</a> and <a href="https://twitter.com/ret2jazzy" target="_blank" rel="noopener">Jazzy</a>) spent around 15 hours during the CTF reversing the firmware, but gave up around 6 hours before the end due to sleep deprivation and other unsolved easy challenges. However, we came back afterwards and managed to solve it with around 5-6 more hours of work. </p>
+<p>In hindsight, we should have kept working on the challenge.</p>
+        
+        <p class="article-more-link">
+            <a href="/2020/06/01/Hack-A-Sat-CTF-2020-Launch-Link/#more">
+                <span class="vm">Read more</span>
+                <i class="icon-arrow-double-right vm"></i>    
+            </a>
+        </p>
+        
         
     </section>
 </article>

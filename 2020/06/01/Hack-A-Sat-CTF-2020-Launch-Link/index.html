@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+
+    
+
+    
+
+    <title>Hack-A-Sat CTF 2020 - Launch Link | Hack</title>
+    <meta name="author" content="Alex Lin" />
+    <meta name="keywords" content="" />
+    <meta name="description" content="Data Link Layer Protocol Firmware Reversing and ExploitationHack-A-Sat CTF 2020 is a space security themed CTF that took place this past week, and it had some really great challenges. One of which is Launch Link, a reversing + pwn task which was s..." />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+
+    
+    <link rel="alternate" href="/atom.xml" title="Hack" type="application/atom+xml">
+    
+    
+
+    <style type="text/css">
+    @font-face {
+				font-family: 'icomoon';
+        src: url("/fonts/icomoon.eot?q628ml");
+        src: url("/fonts/icomoon.eot?q628ml#iefix") format('embedded-opentype'),
+             url("/fonts/icomoon.ttf?q628ml") format('truetype'),
+             url("/fonts/icomoon.woff?q628ml") format('woff'),
+             url("/fonts/icomoon.svg?q628ml#icomoon") format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+    </style>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+		<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,900,400italic%7CSignika:700,300,400,600' rel='stylesheet' type='text/css'>
+
+    <!--[if lt IE 9]>
+    <style type="text/css">
+    .nav-inner {top:0;}
+    .author-meta {position:static;top:0;}
+    .search-form {height:36px;}
+    </style>
+    <script type="text/javascript" src="https://unpkg.com/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <![endif]-->
+<meta name="generator" content="Hexo 4.2.0"><link rel="stylesheet" href="/css/prism-atom-dark.css" type="text/css"></head>
+<body>
+
+    <main class="app">
+        <header id="header" class="header clearfix">
+    <div id="nav" class="nav">
+    <div class="nav-mobile">
+        <button id="open-panel" class="open-panel nav-mobile-item"><i class="icon-documents"></i></button>
+        <h1 class="nav-mobile-title nav-mobile-item">Hack</h1>
+        <button id="open-menus" class="open-panel nav-mobile-item"><i class="icon-library"></i></button>
+    </div>
+
+    <nav id="nav-inner" class="nav-inner">
+        
+            <a class="nav-item" href="/">
+                <span class="nav-text">Posts</span>
+            </a>
+        
+            <a class="nav-item" href="/about">
+                <span class="nav-text">About</span>
+            </a>
+        
+            <a class="nav-item" href="/contact">
+                <span class="nav-text">Contact</span>
+            </a>
+        
+    </nav>
+</div>
+
+    <aside id="aside" class="aside">
+    <div id="aside-mask" class="aside-mask"></div>
+    <div id="aside-inner" class="aside-inner">
+        <!-- <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="http://voido.cc"></form> -->
+
+        
+        
+        
+        
+
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Data-Link-Layer-Protocol-Firmware-Reversing-and-Exploitation"><span class="toc-number">1.</span> <span class="toc-text">Data Link Layer Protocol Firmware Reversing and Exploitation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Description"><span class="toc-number">2.</span> <span class="toc-text">Challenge Description</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Overview"><span class="toc-number">3.</span> <span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reverse-Engineering"><span class="toc-number">4.</span> <span class="toc-text">Reverse Engineering</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vulnerability"><span class="toc-number">5.</span> <span class="toc-text">Vulnerability</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Debugging"><span class="toc-number">6.</span> <span class="toc-text">Debugging</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Exploitation"><span class="toc-number">7.</span> <span class="toc-text">Exploitation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Afterthoughts"><span class="toc-number">8.</span> <span class="toc-text">Afterthoughts</span></a></li></ol>
+        
+    </div>
+</aside>
+
+</header>
+
+        <div id="content" class="content">
+            <div id="wrapper" class="wrapper" style="max-width: 1000px">
+                <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            Hack-A-Sat CTF 2020 - Launch Link
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="http://voido.cc/2020/06/01/Hack-A-Sat-CTF-2020-Launch-Link/index.html">
+    
+    
+    <i class="icon-calendar"></i>
+    
+    <time datetime="2020-06-02T03:27:49.000Z" itemprop="datePublished">2020-06-01</time>
+    
+</a>
+
+            
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <h2 id="Data-Link-Layer-Protocol-Firmware-Reversing-and-Exploitation"><a href="#Data-Link-Layer-Protocol-Firmware-Reversing-and-Exploitation" class="headerlink" title="Data Link Layer Protocol Firmware Reversing and Exploitation"></a>Data Link Layer Protocol Firmware Reversing and Exploitation</h2><p>Hack-A-Sat CTF 2020 is a space security themed CTF that took place this past week, and it had some really great challenges. One of which is Launch Link, a reversing + pwn task which was solved by only one team during the competition.</p>
+<p>We (<a href="https://twitter.com/_voidmercy" target="_blank" rel="noopener">VoidMercy</a> and <a href="https://twitter.com/ret2jazzy" target="_blank" rel="noopener">Jazzy</a>) spent around 15 hours during the CTF reversing the firmware, but gave up around 6 hours before the end due to sleep deprivation and other unsolved easy challenges. However, we came back afterwards and managed to solve it with around 5-6 more hours of work. </p>
+<p>In hindsight, we should have kept working on the challenge.</p>
+<a id="more"></a>
+
+<h2 id="Challenge-Description"><a href="#Challenge-Description" class="headerlink" title="Challenge Description"></a>Challenge Description</h2><p>Our team managed to download off an open FTP server from LaunchDotCom’s website and found some interesting documents about their upcoming Satellte Internet service. We’ve figured out how to communicate over the RF link but we need your help to figure out how to exploit the baseband processor on the satellite.</p>
+<p>We’ve managed to download the firmware for the baseband processor of the payload module from the open FTP server.</p>
+<p>It appears they graciously left an emulator on their public FTP server for debugging their platform, we have provided that as well. Our team has determined that the target system uses 2MB of RAM and to run the emulator use the following command line:</p>
+<pre class=" language-markdown"><code class="language-markdown">vmips -o memsize=2097152 firmware.bin</code></pre>
+<p>Our team would like to access sensitive data located 0xa2008000 on the running system.</p>
+<p>Good Luck!</p>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p><img src="/static/20200508/img1.png" alt=""></p>
+<p>The challenge includes a ROM file and a binary <code>vmips</code>. As the name states, it’s most likely an emulator for MIPS. </p>
+<p>In fact, it turns out that the vmips binary is a modified <a href="http://vmips.sourceforge.net/" target="_blank" rel="noopener">vmips</a> emulator. In comparision, there were a few changes (which we will get to in the reversing), the most prominent one is adding a custom <code>Flag</code> device. </p>
+<p>Instead of exploiting vmips, our target is most likely to exploit the emulated ROM and interface with the Flag device to read the flag. Now let’s start the reversing… </p>
+<h2 id="Reverse-Engineering"><a href="#Reverse-Engineering" class="headerlink" title="Reverse Engineering"></a>Reverse Engineering</h2><p>After reading a little bit about vmips, we discover that the ROM file is a mipsel (32 bit MIPS little endian) blob whose entry point is at physical offset 0x0, mapped at a virtual address 0xbfc00000. </p>
+<p>As expected with firmware ROMs, the binary is completely stripped, so we will have to create segments, rename variables, and create structs ourselves, which is the most time consuming portion of this challenge. With this information, we can fire up our favourite disassembler and begin reversing.</p>
+<p>Instead of using IDA as we normally would, we decided to opt for Ghidra due to it’s superior support for MIPS. As no-one in our team doesn’t knew a whole lot about Ghidra, we thought it would be good chance to learn the UI, shortucts, and features. </p>
+<p>Like IDA, when loading a binary, you must select the processor architecture and the base address at which the binary is loaded at. In this case, the binary is a mips-default-little-32 architecture, loaded at 0xbfc00000.</p>
+<p>+1 to Ghidra for decompiling MIPS. At the entry point, we see the following pseudocode:</p>
+<pre class=" language-c"><code class="language-c">puVar4 <span class="token operator">=</span> <span class="token punctuation">(</span>undefined4 <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>DAT_bfc08ef8<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 0xbfc08ef8 - Src buffer</span>
+puVar7 <span class="token operator">=</span> <span class="token operator">&amp;</span>_gp_1<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 0xa0180000 - Destination buffer</span>
+<span class="token keyword">do</span> <span class="token punctuation">{</span>
+  <span class="token operator">*</span>puVar7 <span class="token operator">=</span> <span class="token operator">*</span>puVar4<span class="token punctuation">;</span>
+  puVar4 <span class="token operator">=</span> puVar4 <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+  puVar7 <span class="token operator">=</span> puVar7 <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token keyword">while</span> <span class="token punctuation">(</span>puVar4 <span class="token operator">!=</span> <span class="token punctuation">(</span>undefined4 <span class="token operator">*</span><span class="token punctuation">)</span><span class="token number">0xbfc09c8c</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// Copy loop</span>
+uVar9 <span class="token operator">=</span> <span class="token number">0xbfc00510</span><span class="token punctuation">;</span>
+<span class="token function">main_logic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// Main func</span></code></pre>
+<p>An important step for firmware and embedded binaries in general is to set-up segments, which is exactly what the binary is doing here. </p>
+<p>This loop is copying data from the ROM, starting from address 0xbfc08ef8 to 0xbfc09c8c, to another address - 0xa0180000. Later, we see that data from 0xa0180000 is continously referenced, so we can reasonably deduce that it’s the RAM/data segment being intialized.</p>
+<p>After identifying RAM, we have to tell Ghidra where RAM is located so that Ghidra’s code analysis will be able to resolve addresses and strings. This is doable through Ghidra’s Memory Map window, where we can create a new RAM segment, and initialize its data with data at an offset in the ROM.</p>
+<p><img src="/static/20200508/img2.png" alt=""></p>
+<p>Next, we can begin digging into the main logic of the binary. A quick way to gain the big picture of what a binary is doing is through examining strings. With the RAM segment set-up, we can see numerous calls in the code similar to this:</p>
+<pre class=" language-c"><code class="language-c"><span class="token function">debug_print</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span>s_MAC<span class="token punctuation">:</span><span class="token punctuation">:</span>Process_a0180b70<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>Some of the strings we see include:</p>
+<pre class=" language-markdown"><code class="language-markdown">MAC::Process
+MAC::UL DATA_BLOCK Invalid CRC-16
+RLL::Radio Link Layer Process (UL/DL processing)
+RLL::UL MAC PDU
+RLL::Radio Resource Layer Process (UL/DL processing)
+RRL:: AP SETUP REQUEST CREATED NEW AP[%u]</code></pre>
+<p>With these strings, we can do a little bit of recon to find <a href="https://en.wikipedia.org/wiki/Medium_access_control" target="_blank" rel="noopener">this</a> or <a href="https://www.nutaq.com/blog/overview-telecom-wireless-protocol-stack-layers" target="_blank" rel="noopener">this</a>. These articles tell us that we are dealing with a telecommunication protocol at the medium access control layer - which is part of the data link layer. </p>
+<p>The role of the data link layer is to transfer data between the network layer and the physical layer, where the network layer consists of incoming packet data and the physical layer is the baremetal device the firmware is running on top of. After packets are parsed, the RRC performs actions with the data.</p>
+<p>Additionally, we can see references to strings referencing AP’s, access points. We can reasonable guess that the RRC will be handling AP creation, deletion, and similar.</p>
+<p>Next, we begin reversing the bulk of the code. The most difficult task when reversing this binary was by far the struct identification. </p>
+<p>+1 again to Ghidra’s struct editor, which provides a very nice interface. There was a total of 9 structs created, some of which had a lot struct members. One of which is shown below:</p>
+<p><img src="/static/20200508/img4.png" alt=""></p>
+<p>Each and every member of the struct’s function have to be reverse engineered and given an appropriate name, which was very time consuming. Consequently, once the structs are identified, the binary becomes simple to understand.</p>
+<p>After a hefty 20 or so hours of staring at Ghidra, we understood the code in full. The main logic is shown below</p>
+<pre class=" language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">main_logic</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  msg_node <span class="token operator">*</span><span class="token operator">*</span>str2_00<span class="token punctuation">;</span>
+  <span class="token keyword">char</span> local_1300 <span class="token punctuation">[</span><span class="token number">4120</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  mac_struct important1<span class="token punctuation">;</span>
+  radio_link_struct important2<span class="token punctuation">;</span>
+  pdu_struct important3<span class="token punctuation">;</span>
+  msg_node <span class="token operator">*</span>str5<span class="token punctuation">;</span>
+  msg_node <span class="token operator">*</span>str4<span class="token punctuation">;</span>
+  msg_node <span class="token operator">*</span>str3<span class="token punctuation">;</span>
+  msg_node <span class="token operator">*</span>str2<span class="token punctuation">;</span>
+  msg_node <span class="token operator">*</span>str1<span class="token punctuation">;</span>
+
+  <span class="token comment" spellcheck="true">// Global data initialization</span>
+  <span class="token function">FUN_bfc08ba8</span><span class="token punctuation">(</span>local_1300<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  communication_buffer <span class="token operator">=</span> local_1300<span class="token punctuation">;</span>
+  <span class="token function">init_prng</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment" spellcheck="true">//set debug prints to 0, more explanation in the debugging section</span>
+  <span class="token function">set_debug</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment" spellcheck="true">// Initializing communication linked lists</span>
+  <span class="token function">create_head</span><span class="token punctuation">(</span><span class="token punctuation">(</span>msg_node <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>str1<span class="token punctuation">,</span>s_UL<span class="token punctuation">:</span>_MACRLL_a0180d3c<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">create_head</span><span class="token punctuation">(</span><span class="token punctuation">(</span>msg_node <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>str2<span class="token punctuation">,</span>s_UL<span class="token punctuation">:</span>_RLLRRL_a0180d48<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">create_head</span><span class="token punctuation">(</span><span class="token punctuation">(</span>msg_node <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>str3<span class="token punctuation">,</span>s_DL<span class="token punctuation">:</span>_RRLRLL_a0180d54<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">create_head</span><span class="token punctuation">(</span><span class="token punctuation">(</span>msg_node <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>str4<span class="token punctuation">,</span>s_DL<span class="token punctuation">:</span>_RLLMAC_a0180d60<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">create_head</span><span class="token punctuation">(</span><span class="token punctuation">(</span>msg_node <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>str5<span class="token punctuation">,</span>s_GLOBAL_a0180d6c<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment" spellcheck="true">// Initialize MAC Layer, Radio Link Layer, Radio Resource Control Layer structs</span>
+  <span class="token function">make_struct</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>important1<span class="token punctuation">,</span><span class="token operator">&amp;</span>str1<span class="token punctuation">,</span><span class="token operator">&amp;</span>str4<span class="token punctuation">,</span><span class="token punctuation">(</span>msg_node <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>str5<span class="token punctuation">,</span>communication_buffer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">make_struct2</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>important2<span class="token punctuation">,</span><span class="token operator">&amp;</span>str1<span class="token punctuation">,</span><span class="token operator">&amp;</span>str2<span class="token punctuation">,</span><span class="token operator">&amp;</span>str4<span class="token punctuation">,</span><span class="token punctuation">(</span>msg_node <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>str3<span class="token punctuation">,</span><span class="token punctuation">(</span>msg_node <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>str5<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  str2_00 <span class="token operator">=</span> <span class="token operator">&amp;</span>str2<span class="token punctuation">;</span>
+  <span class="token function">make_struct3</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>important3<span class="token punctuation">,</span>str2_00<span class="token punctuation">,</span><span class="token punctuation">(</span>msg_node <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>str3<span class="token punctuation">,</span><span class="token punctuation">(</span>msg_node <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>str5<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">setup_timer1</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>important1<span class="token punctuation">,</span>str2_00<span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">setup_timer2</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>important2<span class="token punctuation">,</span>str2_00<span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">do</span> <span class="token punctuation">{</span>
+    <span class="token function">mac_receive</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>important1<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// MAC Processing</span>
+    <span class="token function">radio_link_layer</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>important2<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// Radio Link Layer</span>
+    <span class="token function">process_resource</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>important3<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// Radio Resource Control Layer</span>
+  <span class="token punctuation">}</span> <span class="token keyword">while</span><span class="token punctuation">(</span> true <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>The binary consists of three main “layers” - the MAC Receive Layer, the Radio Link Layer, and the Radio Resource Process layer. I will be referring to these as layers 1, 2, 3 respectively. </p>
+<p>Layers 1 and 2 communicate with each other through a msg_node* linked list. Similarly, layers 2 and 3 do the same. The second RLL layer is the glue between the first and third layer, handling the interlayer communication continously. </p>
+<p>User input is, as expected, sent to the MAC Receive layer. It is then parsed, some packet metadata stripped, then a packet is sent to the Radio Link Layer with data. The Radio Link Layer then handles encryption/decryption of packets (if necessary), and constructs a packet that is sent to the third layer. </p>
+<p>The Radio Resource layer then takes the data, interprets some metadata, and performs AP creation, deletion, and lookups. These packet metadata have opcodes that is then interpreted by each layer to perform a different functionality. A diagram with all of the opcodes and functionalities is shown below.</p>
+<p><img src="/static/20200508/img5.png" alt=""></p>
+<p>The packet sent by us, the attackers, include a packet opcode, CRC16 of the data, and the data itself which contains more packet metadata used by the third layer. For certain opcodes, the RLL encrypts our data, so we need to figure out how the encryption works to communicate with the third layer.</p>
+<p>The cryptography works by first having the user send the only unencrypted packet opcode, with opcode 0x17 for the third layer. This initializes crypto keys, and two IV’s using PRNG. The two IV’s are used for encryption between layers 1&lt;-&gt;2 and 2&lt;-&gt;3.</p>
+<p>The encryption algorithm is <a href="https://en.wikipedia.org/wiki/XTEA" target="_blank" rel="noopener">XTEA</a> in decoder mode with the IV serving as a CTR, generating an xor keystream. Since all the transactions are deterministic, we can simply extract the key and IV, and recreate the xor keystream ourselves to encrypt messages to send.</p>
+<p>Now that the binary is reversed, we can begin searching for the vulnerability.</p>
+<h2 id="Vulnerability"><a href="#Vulnerability" class="headerlink" title="Vulnerability"></a>Vulnerability</h2><p>It turns out we were extremely unlucky during the reverse engineering process. While reversing, we skipped around the binary, prioritizing routines that looked simple. Additionally, we were biased towards layer 3, which is where you would expect the vulnerability to be. </p>
+<p>However after spending a lot of time looking at the third layer and reversing its Access Point structs and failing to spot the vulnerability, we finally decided to finish reversing the final struct and opcodes of the program in the second layer.</p>
+<p>The opcode 0x73 sent from layer 2 to layer 3 consists of a lot of PDU (Protocol Data Unit) structs that we neglected until the end. This routine stores packets sent from the MAC Layer until the packets ID’s that are sent are contiguous, meaning that all of the packets have been received and are ready to be sent to layer 3. This is how the Radio Link Layer handles sending data larger than the packet size supported by the MAC Layer.</p>
+<p>The bug is a stack buffer overflow vulnerability when the maximum packet size (0xc0) from the MAC Layer is used to send the maximum number of packets (16) for the Radio Link Layer. </p>
+<p>The Radio Link Layer takes these packets, merges them, then applies the XTEA XOR keystream decryption to it. However, the decrypted buffer is not large enough to contain all of this data, leading to a stack buffer overflow. The vulnerable code is shown below:</p>
+<pre class=" language-c"><code class="language-c">undefined4
+<span class="token function">copy_data</span><span class="token punctuation">(</span>pdu_data_packet <span class="token operator">*</span>pdu_data_struct<span class="token punctuation">,</span><span class="token keyword">char</span><span class="token operator">*</span> dest<span class="token punctuation">,</span>uint max_length<span class="token punctuation">,</span>undefined2 <span class="token operator">*</span>size_of_dec<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  uint sig<span class="token punctuation">;</span>
+  undefined4 uVar1<span class="token punctuation">;</span>
+  <span class="token keyword">char</span> <span class="token operator">*</span>curchar<span class="token punctuation">;</span>
+  <span class="token keyword">char</span> <span class="token operator">*</span><span class="token operator">*</span>buf_ptr<span class="token punctuation">;</span>
+  <span class="token keyword">int</span> size<span class="token punctuation">;</span>
+
+  sig <span class="token operator">=</span> <span class="token function">get_signature</span><span class="token punctuation">(</span>pdu_data_struct<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  uVar1 <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>sig <span class="token operator">&lt;=</span> max_length<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">// Faulty check for length</span>
+    buf_ptr <span class="token operator">=</span> pdu_data_struct<span class="token operator">-></span>buf_start<span class="token punctuation">;</span>
+    size <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">do</span> <span class="token punctuation">{</span>
+      curchar <span class="token operator">=</span> <span class="token operator">*</span>buf_ptr<span class="token punctuation">;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>curchar <span class="token operator">!=</span> <span class="token number">0x0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">memcpy</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>dest<span class="token punctuation">[</span>size<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token operator">*</span><span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span><span class="token operator">*</span><span class="token punctuation">)</span>curchar<span class="token punctuation">,</span> <span class="token punctuation">(</span>uint<span class="token punctuation">)</span> curchar<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// Copy data into stack buffer</span>
+        size <span class="token operator">=</span> size <span class="token operator">+</span> <span class="token punctuation">(</span>uint<span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token operator">*</span>buf_ptr<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// Size is not bounds checked</span>
+      <span class="token punctuation">}</span>
+      buf_ptr <span class="token operator">=</span> buf_ptr <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+      uVar1 <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">while</span> <span class="token punctuation">(</span>buf_ptr <span class="token operator">!=</span> <span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>pdu_data_struct<span class="token operator">-></span>sn_num<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// Iterate through each separate packet</span>
+    <span class="token operator">*</span>size_of_dec <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">short</span><span class="token punctuation">)</span>size<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> uVar1<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Now we can then proceed to exploitation. But before that, we have to set-up a debug environment, which turned out to be surprisingly annoying.</p>
+<h2 id="Debugging"><a href="#Debugging" class="headerlink" title="Debugging"></a>Debugging</h2><p>Remember the <code>debug_print</code> function shown at the start? It was being called multiple times every iteration with juicy debug info (that would help us in exploit dev) but nothing was ever getting printed. Wouldn’t it be nice to get it working?</p>
+<pre class=" language-c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">debug_print</span><span class="token punctuation">(</span><span class="token keyword">int</span> fd<span class="token punctuation">,</span>undefined <span class="token operator">*</span>fmt<span class="token punctuation">,</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  undefined4 in_a2<span class="token punctuation">;</span>
+  undefined4 in_a3<span class="token punctuation">;</span>
+  <span class="token keyword">int</span> iVar1<span class="token punctuation">;</span>
+  undefined4 local_res8<span class="token punctuation">;</span>
+  undefined4 local_resc<span class="token punctuation">;</span>
+  <span class="token keyword">char</span> acStack1040 <span class="token punctuation">[</span><span class="token number">1024</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  undefined4 <span class="token operator">*</span>local_10<span class="token punctuation">;</span>
+
+  local_10 <span class="token operator">=</span> <span class="token operator">&amp;</span>local_res8<span class="token punctuation">;</span>
+  iVar1 <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>fd <span class="token operator">&amp;</span> X_global_var<span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">// Global debug flag</span>
+    local_res8 <span class="token operator">=</span> in_a2<span class="token punctuation">;</span>
+    local_resc <span class="token operator">=</span> in_a3<span class="token punctuation">;</span>
+    iVar1 <span class="token operator">=</span> <span class="token function">__vsnprintf_internal</span><span class="token punctuation">(</span>acStack1040<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf2</span><span class="token punctuation">(</span>s_DEBUG<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token operator">%</span>s_a0180418<span class="token punctuation">,</span>acStack1040<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// Do debug print</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> iVar1<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>From the code, it can been seen that the debug print will only work if the <code>X_global_var</code> is not 0. Tracing the cross references, it is being set to 0 right after initialization. This is why there was no debug output.</p>
+<p>Patching this was easy as replacing the <code>beq</code> (branch if equal) at 0xbfc01808 to <code>bne</code> (branch if not equal), essentially inverting the logic.</p>
+<p><img src="/static/20200508/debug_print3.png" alt=""></p>
+<p>Running the ROM again, we are blasted with debug prints.</p>
+<p><img src="/static/20200508/debug_print1.png" alt=""></p>
+<p>Although it was nice to get these working, they are still just the built-in debug prints. To aid in exploit writing, a somewhat more sophisticated debug setup is required. </p>
+<p>By default, vmips ships with gdbserver support. However the implementation is very broken and the protocols differ between GDB versions, so we couldn’t work with it.</p>
+<p>Instead of fixing the gdbserver, we decided to go in a completely different direction and use the internal tracing mechanism of vmips. </p>
+<p>Passing the parameter <code>-o instdump</code> to vmips would make it log every instruction to stderr, which could be used to trace exactly how the execution progressed and what branches were taken. </p>
+<p>Theoretically, that sounds pretty good. But one big issue was that this made the emulator insanely slow as writing to stderr after every instruction was a huge overhead. </p>
+<p>Even after running for 5+ minutes, it didn’t even complete the initial copy loop, therefore rendering it useless for our purpose.</p>
+<p>Another mechanism was <code>-o tracing</code> where we could provide the <code>tracestartpc</code> (start tracing PC) and <code>tracestartpc</code> (end tracing PC), essentially only tracing the instructions between those two addresses. Unfortunately, it didn’t work.  </p>
+<p>Looking into the vmips source code, the <code>CPU::open_trace_file()</code> was broken.</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">void</span>
+CPU<span class="token operator">::</span><span class="token function">open_trace_file</span> <span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+  <span class="token keyword">char</span> tracefilename<span class="token punctuation">[</span><span class="token number">80</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">unsigned</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">sprintf</span> <span class="token punctuation">(</span>tracefilename<span class="token punctuation">,</span> <span class="token string">"traceout%d.txt"</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">can_read_file</span> <span class="token punctuation">(</span>tracefilename<span class="token punctuation">)</span><span class="token punctuation">)</span>
+      <span class="token keyword">break</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  traceout <span class="token operator">=</span> <span class="token function">fopen</span> <span class="token punctuation">(</span>tracefilename<span class="token punctuation">,</span> <span class="token string">"w"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">bool</span> <span class="token function">can_read_file</span> <span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span>filename<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">assert</span> <span class="token punctuation">(</span>filename <span class="token operator">&amp;&amp;</span> <span class="token string">"Null pointer passed to can_read_file ()"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  FILE <span class="token operator">*</span>f <span class="token operator">=</span> <span class="token function">fopen</span> <span class="token punctuation">(</span>filename<span class="token punctuation">,</span> <span class="token string">"r"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>f<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+  <span class="token function">fclose</span> <span class="token punctuation">(</span>f<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Basically, it’s expecting the <code>can_read_file()</code> to return false if the file is readable whereas the opposite happens. So the <code>tracing</code> argument just puts the emulator in an infinite loop. </p>
+<p>Again, we patched this and got tracing to work. We could now see what addresses it executed and what branches it took. We are slowly making progress…</p>
+<p>Another argument we could pass was <code>-o dumpcpu</code>, which would dump the CPU state (registers and stack) at every instruction, but that didn’t work either. Later, we realized that they had a custom <code>run_fast()</code> function in vmips which would skip over the <code>vmips::dump_cpu_info()</code> function call. </p>
+<p>So instead of relying on only the internal vmips mechanism, we decided to write a custom patch ourselves which would dump the CPU state at a targeted instruction.  </p>
+<p>A patch like that would be large and impossible to fit in the binary, but this was our time to shine. We developed an ELF Patching library (ELFPatch) last year (planning to open-source soon) and this was the perfect scenario to use it.  </p>
+<p>The plan was to hook <code>vmips::step()</code> and call <code>CPU::dump_regs()</code> function if we are at the right instruction. Here is how it looked in code:</p>
+<pre class=" language-python"><code class="language-python"><span class="token keyword">from</span> ELFPatch <span class="token keyword">import</span> ELFPatch 
+
+f <span class="token operator">=</span> ELFPatch<span class="token punctuation">(</span><span class="token string">"./vmips"</span><span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">#patch at 0x1fbdd in vmips::step()</span>
+new_patch <span class="token operator">=</span> f<span class="token punctuation">.</span>new_patch<span class="token punctuation">(</span>virtual_address<span class="token operator">=</span><span class="token number">0x1fbdd</span><span class="token punctuation">,</span> size<span class="token operator">=</span><span class="token number">0x200</span><span class="token punctuation">,</span> append_original_instructions<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> append_jump_back<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+
+new_patch<span class="token punctuation">.</span>update_patch<span class="token punctuation">(</span>f<span class="token punctuation">.</span>assembler<span class="token punctuation">.</span>assemble<span class="token punctuation">(</span><span class="token triple-quoted-string string">"""
+
+push_regs:    ; save registers to stack
+push rax
+push rbx
+...
+
+do_stuff:
+mov rdi, QWORD PTR [r14+0x10]   ; the CPU member
+mov rcx, rdi
+add rcx, 344
+mov ecx, DWORD PTR [rcx]        ; load the PC (instruction pointer)
+cmp ecx, 0xa00fe77c             ; compare to a hardcoded value
+jne end                         ; continue normal execution if PC is not what we want
+
+lea rsi, [0x245600]            ; load stderr
+mov rsi, QWORD PTR [rsi]
+call 0x15030                   ;call CPU::dump_regs() with stderr
+
+end:
+pop_regs:   ; restore saved registers
+pop r15
+pop r14
+pop r13
+...
+"""</span><span class="token punctuation">,</span>offset<span class="token operator">=</span>new_patch<span class="token punctuation">.</span>chunk<span class="token punctuation">.</span>virtual_address<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"New Patch at"</span><span class="token punctuation">,</span> hex<span class="token punctuation">(</span>new_patch<span class="token punctuation">.</span>chunk<span class="token punctuation">.</span>virtual_address<span class="token punctuation">)</span><span class="token punctuation">)</span>
+f<span class="token punctuation">.</span>write_file<span class="token punctuation">(</span><span class="token string">"./vmips_patched"</span><span class="token punctuation">)</span></code></pre>
+<p>YEEET, now we could print the full CPU state at any instruction. This was good enough for us to start developing an exploit.</p>
+<p><img src="/static/20200508/debug_print2.png" alt=""></p>
+<h2 id="Exploitation"><a href="#Exploitation" class="headerlink" title="Exploitation"></a>Exploitation</h2><p>First we have to trigger the bug. To trigger the overflow, we have to specify the packet ID that we are constructing through the SN num, which is the lsb of the second byte. </p>
+<p>Once contiguous SN nums are filled up, the packet is then decrypted and placed onto a buffer on the stack, which triggers the overflow. So, we can begin sending packest starting from the last SN num - 16.</p>
+<pre class=" language-python"><code class="language-python">res<span class="token punctuation">.</span>append<span class="token punctuation">(</span>message_block<span class="token punctuation">(</span>b<span class="token string">"\x73\x0f\x80\x23"</span> <span class="token operator">+</span> b<span class="token string">"A"</span><span class="token operator">*</span><span class="token number">0xb9</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+res<span class="token punctuation">.</span>append<span class="token punctuation">(</span>message_block<span class="token punctuation">(</span>b<span class="token string">"\x73\x0e\x80\x23"</span> <span class="token operator">+</span> b<span class="token string">"A"</span><span class="token operator">*</span><span class="token number">0xb9</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+res<span class="token punctuation">.</span>append<span class="token punctuation">(</span>message_block<span class="token punctuation">(</span>b<span class="token string">"\x73\x0d\x80\x23"</span> <span class="token operator">+</span> b<span class="token string">"A"</span><span class="token operator">*</span><span class="token number">0xb9</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+res<span class="token punctuation">.</span>append<span class="token punctuation">(</span>message_block<span class="token punctuation">(</span>b<span class="token string">"\x73\x0c\x80\x23"</span> <span class="token operator">+</span> b<span class="token string">"A"</span><span class="token operator">*</span><span class="token number">0xb9</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+res<span class="token punctuation">.</span>append<span class="token punctuation">(</span>message_block<span class="token punctuation">(</span>b<span class="token string">"\x73\x0b\x80\x23"</span> <span class="token operator">+</span> b<span class="token string">"A"</span><span class="token operator">*</span><span class="token number">0xb9</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+res<span class="token punctuation">.</span>append<span class="token punctuation">(</span>message_block<span class="token punctuation">(</span>b<span class="token string">"\x73\x0a\x80\x23"</span> <span class="token operator">+</span> b<span class="token string">"A"</span><span class="token operator">*</span><span class="token number">0xb9</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+res<span class="token punctuation">.</span>append<span class="token punctuation">(</span>message_block<span class="token punctuation">(</span>b<span class="token string">"\x73\x09\x80\x23"</span> <span class="token operator">+</span> b<span class="token string">"A"</span><span class="token operator">*</span><span class="token number">0xb9</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+res<span class="token punctuation">.</span>append<span class="token punctuation">(</span>message_block<span class="token punctuation">(</span>b<span class="token string">"\x73\x08\x80\x23"</span> <span class="token operator">+</span> b<span class="token string">"A"</span><span class="token operator">*</span><span class="token number">0xb9</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+res<span class="token punctuation">.</span>append<span class="token punctuation">(</span>message_block<span class="token punctuation">(</span>b<span class="token string">"\x73\x07\x80\x23"</span> <span class="token operator">+</span> b<span class="token string">"A"</span><span class="token operator">*</span><span class="token number">0xb9</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+res<span class="token punctuation">.</span>append<span class="token punctuation">(</span>message_block<span class="token punctuation">(</span>b<span class="token string">"\x73\x06\x80\x23"</span> <span class="token operator">+</span> b<span class="token string">"A"</span><span class="token operator">*</span><span class="token number">0xb9</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+res<span class="token punctuation">.</span>append<span class="token punctuation">(</span>message_block<span class="token punctuation">(</span>b<span class="token string">"\x73\x05\x80\x23"</span> <span class="token operator">+</span> b<span class="token string">"A"</span><span class="token operator">*</span><span class="token number">0xb9</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+res<span class="token punctuation">.</span>append<span class="token punctuation">(</span>message_block<span class="token punctuation">(</span>b<span class="token string">"\x73\x04\x80\x23"</span> <span class="token operator">+</span> b<span class="token string">"A"</span><span class="token operator">*</span><span class="token number">0xb9</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+res<span class="token punctuation">.</span>append<span class="token punctuation">(</span>message_block<span class="token punctuation">(</span>b<span class="token string">"\x73\x03\x80\x23"</span> <span class="token operator">+</span> b<span class="token string">"A"</span><span class="token operator">*</span><span class="token number">0xb9</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+res<span class="token punctuation">.</span>append<span class="token punctuation">(</span>message_block<span class="token punctuation">(</span>b<span class="token string">"\x73\x02\x80\x23"</span> <span class="token operator">+</span> b<span class="token string">"A"</span><span class="token operator">*</span><span class="token number">0xb9</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+res<span class="token punctuation">.</span>append<span class="token punctuation">(</span>message_block<span class="token punctuation">(</span>b<span class="token string">"\x73\x01\x80\x23"</span> <span class="token operator">+</span> b<span class="token string">"A"</span><span class="token operator">*</span><span class="token number">0xb9</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
+<p>And we get:</p>
+<p><img src="/static/20200508/rip.png" alt=""></p>
+<p>Segfault at 0x41414141! That’s what we like to see.</p>
+<p>Since we are exploiting a firmware ROM and usually firmwares lack any sort of mitigations such as canaries and NX, maybe this does too?</p>
+<p>Indeed, vmips doesn’t support any fancy mitigations, so we can directly overwrite the return address and achieve PC control. The question is then, what do we overwrite the return address with?</p>
+<p>Using ROP may have been a valid option, but since there are essentially no memory protections, we could just get shellcode execution. </p>
+<p>Therefore, we opted to leak the deterministic stack address of our buffer data through debugging, and jump there to gain full code execution. </p>
+<p>As we jumped to the stack, the emulator died. We guessed that the emulator’s stack is specially treated as it is not mapped by the firmware ROM itself, so we instead tried jumping to our buffer in RAM and sure enough…</p>
+<p><img src="/static/20200508/inf.png" alt=""></p>
+<p>Our test shellcode that runs in an infinite loop works!</p>
+<p>Now all that’s left is to write shellcode that iterates through the flag device location 0xa2008000 in intervals of 4 and writes that data to the communication buffer between the vmips emulator and the user.</p>
+<p><img src="/static/20200508/shellcode.png" alt=""></p>
+<p>Aaaand let’s test it on remote.</p>
+<p><img src="/static/20200508/win.png" alt=""></p>
+<p>PWNED!!</p>
+<p>The final exploit is available <a href="https://github.com/perfectblue/ctf-writeups/blob/master/2020/Hack-A-Sat-Quals/Launch-Link/solve.py" target="_blank" rel="noopener">here</a></p>
+<h2 id="Afterthoughts"><a href="#Afterthoughts" class="headerlink" title="Afterthoughts"></a>Afterthoughts</h2><p>Now that we look over our whole process again, here are a few things we learned and what we could have done better:</p>
+<ul>
+<li>Ghidra is amazing for reversing non-mainstream architectures with an awesome collaboration setup - we will definitely be using it more from now on.</li>
+<li>We shouldn’t have given up at the end. If only we had spent a little more time reversing, we might have solved it during the CTF timeframe.</li>
+<li>Familiarity with good tools is a priceless asset during a competition. Without Ghidra’s decompilation, we would have never finished reversing this binary, and without ELFPatch, we would have spent a lot more time setting up debugging.</li>
+</ul>
+<p>Overall, we learned a lot from the challenge. From reversing a completely stripped binary blob to understanding the three layered data link protocol, it had everything. </p>
+<p>Thank you for reading and a big shoutout to Hack-A-Sat organizers for designing such an interesting challenge. </p>
+<p>For any questions/clarifications, you can contact either <a href="https://twitter.com/_VoidMercy" target="_blank" rel="noopener">VoidMercy</a> or <a href="https://twitter.com/ret2jazzy" target="_blank" rel="noopener">Jazzy</a>. </p>
+
+        
+    </section>
+</article>
+
+
+
+
+
+
+<div class="comments">
+    <div id="comments"></div>
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+    new Gitalk({
+        clientID: "f5b7a120cac4c335f0b3",
+        clientSecret: "67dcc42ec74a275d3bc48490a1a6a775311a83ad",
+        repo: "voidmercy.github.io",
+        owner: "VoidMercy",
+        admin: ["VoidMercy"],
+        id: "Hack-A-Sat CTF 2020 - Launch Link",
+        distractionFreeMode: true,
+        title: "Hack-A-Sat CTF 2020 - Launch Link",
+        body: "http://voido.cc/2020/06/01/Hack-A-Sat-CTF-2020-Launch-Link/",
+        labels: []
+    }).render('comments');
+    </script>
+</div>
+
+
+
+            </div>
+        </div>
+        <footer class="footer">
+    <!-- Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>, Theme by <a href="https://github.com/sanonz/hexo-theme-concise" target="_blank">Concise</a> -->
+
+    
+</footer>
+
+    </main>
+
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.9.0/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        var nodes = {
+            nav: $('#nav'),
+            aside: $('#aside'),
+            asideInner: $('#aside-inner'),
+            navInner: $('#nav-inner')
+        };
+
+        var doing = false;
+        nodes.asideInner.on('webkitAnimationEnd mozAnimationEnd oAnimationEnd oanimationend animationend', function() {
+            if (nodes.aside.hasClass('mobile-open')) {
+                nodes.aside.removeClass('mobile-open');
+            } else {
+                nodes.aside.removeClass('mobile-close panel-show');
+            }
+            doing = false;
+        });
+        $('#open-panel, #aside-mask').on('click', function() {
+            if (doing) {
+                return;
+            }
+
+            if (nodes.aside.hasClass('panel-show')) {
+                nodes.aside.addClass('mobile-close');
+            } else {
+                nodes.aside.addClass('mobile-open panel-show');
+            }
+        });
+        $('#open-menus').on('click', function() {
+            nodes.navInner.slideToggle();
+        });
+
+        if (window.innerWidth <= 960) {
+            setTimeout(function() {
+                nodes.navInner.slideUp();
+            }, 3000);
+        }
+    });
+    </script>
+    
+        
+<script src="/js/scrollspy.min.js"></script>
+
+        <script type="text/javascript">
+        $(document.body).scrollspy({target: '#aside-inner'});
+
+        $(window).on('resize', function() {
+            var hw = $('#header').width();
+            var ww = $('#wrapper').width();
+            var space = ($(this).width() - hw - ww) / 2 / 2;
+
+            var pageprev = $('#pageprev');
+            var pagenext = $('#pagenext');
+            var avg = (pageprev.width() + pagenext.width()) / 2
+
+            if(space > avg) {
+                var len = space - avg / 2;
+                var styles = {position: 'fixed', top: '50%', marginTop: - (pageprev.width() + pagenext.width()) / 4}
+                pageprev.css($.extend({left: hw + len}, styles));
+                pagenext.css($.extend({right: len}, styles));
+            } else {
+                pageprev.removeAttr('style');
+                pagenext.removeAttr('style');
+            }
+        }).trigger('resize');
+        </script>
+    
+
+</body>
+</html>
